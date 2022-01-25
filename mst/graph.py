@@ -29,10 +29,48 @@ class Graph:
         Note that because we assume our input graph is undirected, `self.adj_mat` is symmetric. 
         Row i and column j represents the edge weight between vertex i and vertex j. An edge weight of zero indicates that no edge exists. 
         
-        TODO: 
-            This function does not return anything. Instead, store the adjacency matrix 
-        representation of the minimum spanning tree of `self.adj_mat` in `self.mst`.
-        We highly encourage the use of priority queues in your implementation. See the heapq
-        module, particularly the `heapify`, `heappop`, and `heappush` functions.
         """
-        self.mst = 'TODO'
+
+        # empty mst of same shape, will fill throughout 
+        self.mst = np.zeros_like(self.adj_mat)
+
+        # store total available nodes
+        total_nodes = self.adj_mat.shape[0]
+
+        # start at random node, I choose 0th  
+        start_node = 0
+        # already visited: start_node
+        visited = [start_node]
+
+        # log adj. nodes and dists in 1st row of self.adj 
+        # here: (distance, from_start_node, to_end_node)
+        logged_edges = [(dist, start_node, node) for node, dist in enumerate(self.adj_mat[0]) if dist != 0]
+        # heapify: lightest weight first
+        heapq.heapify(logged_edges)
+
+
+        # while we have not visited everyone yet
+        while len(visited) != total_nodes:
+            # popping tuple: dist, from_start_node, to_end_node
+            lightest, start, end = heapq.heappop(logged_edges)
+
+            # if we have not visited the end_node
+            if end not in visited:
+                # fill destination [start][end] with dist
+                # note symmetry
+                self.mst[start][end] = lightest 
+                self.mst[end][start] = lightest
+
+                # we've visited someone new, and it was cheap
+                visited.append(end)
+
+                # let's checkout the hosts adj. neighbors
+                # iterate through all possible neighbors (total_nodes), cols 
+                for new_node in range(total_nodes):
+                    # push to heap (logged edges) its adj. neighbors, following tuple pattern
+                    # we'll heapify once we pop
+                    # note that (self.adj_mat[end, new_node], end, node)
+                    # is (the_new_distance, from_new_start_node, to_adjacent_neighbor)
+                    heapq.heappush(logged_edges, (self.adj_mat[end, new_node], end, new_node))
+
+                # hmm, how do i avoid zeros??? aka no edges 

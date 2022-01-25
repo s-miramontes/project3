@@ -12,13 +12,11 @@ def check_mst(adj_mat: np.ndarray,
     """ Helper function to check the correctness of the adjacency matrix encoding an MST.
         Note that because the MST of a graph is not guaranteed to be unique, we cannot 
         simply check for equality against a known MST of a graph. 
-
         Arguments:
             adj_mat: Adjacency matrix of full graph
             mst: Adjacency matrix of proposed minimum spanning tree
             expected_weight: weight of the minimum spanning tree of the full graph
             allowed_error: Allowed difference between proposed MST weight and `expected_weight`
-
         TODO: 
             Add additional assertions to ensure the correctness of your MST implementation
         For example, how many edges should a minimum spanning tree have? Are minimum spanning trees
