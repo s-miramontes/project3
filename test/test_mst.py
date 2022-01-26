@@ -27,9 +27,13 @@ def check_mst(adj_mat: np.ndarray,
         return abs(a - b) < allowed_error
 
     total = 0
+    print(mst.shape[0])
+    print(adj_mat)
     for i in range(mst.shape[0]):
         for j in range(i+1):
             total += mst[i, j]
+    print(total)
+    print(mst)
     # checks that the total weight of the generated mst is approx equal to expected_weight
     assert approx_equal(total, expected_weight), 'Proposed MST has incorrect expected weight'
 
@@ -40,9 +44,11 @@ def check_mst(adj_mat: np.ndarray,
     non_zero = np.count_nonzero(mst)
     # divide count by 2 bc symmetric
     edges = non_zero/2 
-    assert edges == mst_edges
+    assert edges == mst_edges, 'Proposed MST has incorrect number of edges'
 
-    # check connectivity 
+    # SYMMETRY CHECK; recall matrix is symm. if A = A ^ T
+    # both mst and adj_mat are symm
+    assert np.array_equal(mst, mst.T), 'Proposed MST is not symmetric'
 
 
 def test_mst_small():
@@ -69,5 +75,19 @@ def test_mst_single_cell_data():
 
 
 def test_mst_student():
-    """ TODO: Write at least one unit test for MST construction """
-    pass
+    """ Extra test given the following file matrix"""
+    # my file is:
+    #[0 2 3]
+    #[2 0 4]
+    #[3 4 0]
+    #
+    # mst:
+    #[0 2 3]
+    #[2 0 0]
+    #[3 0 0 ]
+
+    file = 'data/my_test.csv'
+    g = Graph(file)
+    g.construct_mst()
+
+    check_mst(g.adj_mat, g.mst, 5)
