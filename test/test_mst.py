@@ -23,13 +23,29 @@ def check_mst(adj_mat: np.ndarray,
         always connected? What else can you think of?
     """
     def approx_equal(a, b):
+        # approximately equal, given a margin of error
         return abs(a - b) < allowed_error
 
     total = 0
     for i in range(mst.shape[0]):
         for j in range(i+1):
             total += mst[i, j]
+    # checks that the total weight of the generated mst is approx equal to expected_weight
     assert approx_equal(total, expected_weight), 'Proposed MST has incorrect expected weight'
+
+    # check for edges; mst must have V-1 edges, where V is number vertices.
+    nodes_mst = adj_mat.shape[0] # how many nodes?
+    mst_edges = nodes_mst - 1 
+
+    # count non_zero for each non zero is an edge
+    non_zero = np.count_nonzero(mst)
+    # divide count by 2 bc symmetric
+    edges = non_zero/2 
+
+    print("hi, i am about to be tested")
+    assert edges == mst_edges
+
+    # check connectivity 
 
 
 def test_mst_small():
